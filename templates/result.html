@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prediction Result - Insurance Predictor Pro</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(
+        270deg,
+        #4facfe,
+        #00f2fe,
+        #43e97b,
+        #f8ffae,
+        #ff9a9e,
+        #fad0c4
+      );
+      background-size: 400% 400%;
+      animation: gradientBG 25s ease infinite;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Floating circles */
+    .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; }
+    .circles li {
+      position: absolute;
+      display: block;
+      list-style: none;
+      background: rgba(255, 255, 255, 0.2);
+      animation: animate 25s linear infinite;
+      bottom: -150px;
+      border-radius: 50%;
+    }
+    .circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-duration: 22s; }
+    .circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-duration: 12s; }
+    .circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-duration: 18s; }
+    .circles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-duration: 20s; }
+    .circles li:nth-child(5) { left: 65%; width: 110px; height: 110px; animation-duration: 30s; }
+    .circles li:nth-child(6) { left: 75%; width: 150px; height: 150px; animation-duration: 40s; }
+    .circles li:nth-child(7) { left: 35%; width: 25px; height: 25px; animation-duration: 16s; }
+    .circles li:nth-child(8) { left: 50%; width: 15px; height: 15px; animation-duration: 12s; }
+    .circles li:nth-child(9) { left: 20%; width: 150px; height: 150px; animation-duration: 35s; }
+    .circles li:nth-child(10) { left: 85%; width: 25px; height: 25px; animation-duration: 18s; }
+    .circles li:nth-child(11) { left: 5%; width: 45px; height: 45px; animation-duration: 28s; }
+    .circles li:nth-child(12) { left: 90%; width: 70px; height: 70px; animation-duration: 32s; }
+
+    @keyframes animate {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; }
+      100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+    }
+
+    /* Card styling */
+    .card {
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 1;
+      position: relative;
+      padding: 40px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+
+    h2 {
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      padding-bottom: 15px;
+    }
+    h2:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      border-radius: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
+      border: none;
+      font-weight: 600;
+      transition: 0.3s;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(45deg, #00c6ff, #4facfe);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+    }
+
+    .result-value {
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #4facfe;
+      margin: 15px 0;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .result-label { font-size: 1.3rem; color: #666; margin-bottom: 15px; }
+
+    .badge-high { background: #ff4d4d; color: #fff; font-size: 1.2rem; padding: 0.5rem 1rem; }
+    .badge-medium { background: #ffb84d; color: #fff; font-size: 1.2rem; padding: 0.5rem 1rem; }
+    .badge-low { background: #4cd137; color: #fff; font-size: 1.2rem; padding: 0.5rem 1rem; }
+
+    .tips {
+      margin-top: 20px;
+      font-size: 1rem;
+      color: #444;
+      background: rgba(255,255,255,0.8);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .abhishek-text {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #fff;
+      z-index: 2;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+    @media (max-width: 768px) {
+      .card { padding: 25px 15px; }
+      .result-value { font-size: 2.2rem; }
+      .abhishek-text { font-size: 1.4rem; }
+    }
+
+    /* Floating background icons */
+    .bg-icon {
+      position: absolute;
+      font-size: 4rem;
+      color: rgba(255,255,255,0.15);
+      animation: floatIcon 20s infinite linear;
+    }
+    .bg-icon:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+    .bg-icon:nth-child(2) { top: 50%; left: 70%; animation-delay: 5s; }
+    .bg-icon:nth-child(3) { top: 70%; left: 30%; animation-delay: 10s; }
+
+    @keyframes floatIcon {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-50px) rotate(180deg); }
+      100% { transform: translateY(0) rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<ul class="circles">
+  <li></li><li></li><li></li><li></li><li></li>
+  <li></li><li></li><li></li><li></li><li></li>
+  <li></li><li></li>
+</ul>
+
+<div class="bg-icon"><i class="fas fa-car-side"></i></div>
+<div class="bg-icon"><i class="fas fa-user-md"></i></div>
+<div class="bg-icon"><i class="fas fa-ambulance"></i></div>
+
+<div class="abhishek-text">Abhishek</div>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height:100vh; position: relative; z-index:1;">
+  <div class="card shadow p-5 w-100 text-center" style="max-width:600px;">
+    <h2 class="mb-4"><i class="fas fa-chart-line me-2"></i> Prediction Result</h2>
+
+    <div class="result-container">
+      <i class="fas fa-shield-alt" style="font-size: 4rem; color: #4facfe; margin-bottom: 20px;"></i>
+
+      <div class="result-label">Your Estimated Insurance Charges</div>
+      <div class="result-value">${{ "{:,.2f}".format(prediction) }}</div>
+      <div class="result-value">₹{{ "{:,.2f}".format(prediction * 80) }}</div>
+
+      {% if prediction < 5000 %}
+        <span class="badge-low">Low</span>
+      {% elif prediction < 15000 %}
+        <span class="badge-medium">Medium</span>
+      {% else %}
+        <span class="badge-high">High</span>
+      {% endif %}
+
+      <div class="tips">
+        <h5>Tips:</h5>
+        <ul>
+          <li>Maintain a healthy lifestyle to potentially reduce your insurance cost.</li>
+          <li>Review coverage options and choose what fits your profile best.</li>
+          <li>Consider quitting smoking if applicable to lower charges.</li>
+        </ul>
+      </div>
+
+      <a href="/" class="btn btn-primary mt-4 w-100">
+        <i class="fas fa-arrow-left me-2"></i> Back to Form
+      </a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

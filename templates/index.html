@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insurance Predictor Pro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(270deg, #4facfe, #00f2fe, #43e97b, #f8ffae, #ff9a9e, #fad0c4);
+      background-size: 400% 400%;
+      animation: gradientBG 25s ease infinite;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .circles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .circles li {
+      position: absolute;
+      display: block;
+      list-style: none;
+      background: rgba(255, 255, 255, 0.2);
+      animation: animate 25s linear infinite;
+      bottom: -150px;
+      border-radius: 50%;
+    }
+
+    .circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-duration: 22s; }
+    .circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-duration: 12s; }
+    .circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-duration: 18s; }
+    .circles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-duration: 20s; }
+    .circles li:nth-child(5) { left: 65%; width: 110px; height: 110px; animation-duration: 30s; }
+    .circles li:nth-child(6) { left: 75%; width: 150px; height: 150px; animation-duration: 40s; }
+    .circles li:nth-child(7) { left: 35%; width: 25px; height: 25px; animation-duration: 16s; }
+    .circles li:nth-child(8) { left: 50%; width: 15px; height: 15px; animation-duration: 12s; }
+    .circles li:nth-child(9) { left: 20%; width: 150px; height: 150px; animation-duration: 35s; }
+    .circles li:nth-child(10) { left: 85%; width: 25px; height: 25px; animation-duration: 18s; }
+    .circles li:nth-child(11) { left: 5%; width: 45px; height: 45px; animation-duration: 28s; }
+    .circles li:nth-child(12) { left: 90%; width: 70px; height: 70px; animation-duration: 32s; }
+
+    @keyframes animate {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; }
+      100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+    }
+
+    .card {
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 1;
+      position: relative;
+      padding: 40px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    h2:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      border-radius: 2px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+      border-radius: 12px;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #4facfe;
+      box-shadow: 0 0 0 0.25rem rgba(79, 172, 254, 0.25);
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
+      border: none;
+      font-weight: 600;
+      transition: 0.3s;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(45deg, #00c6ff, #4facfe);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+    }
+
+    .currency-toggle {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: rgba(255,255,255,0.85);
+      color: #333;
+      font-weight: bold;
+      padding: 10px 15px;
+      border-radius: 50px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      z-index: 2;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .currency-toggle:hover {
+      background: rgba(255,255,255,0.95);
+      transform: scale(1.05);
+    }
+
+    .currency-flag {
+      font-size: 1.2rem;
+    }
+
+    .tips-badge {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.85);
+      color: #333;
+      font-weight: bold;
+      padding: 15px 20px;
+      border-radius: 50px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      z-index: 2;
+      font-size: 1.2rem;
+      animation: floatRotate 3s ease-in-out infinite alternate;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+    }
+
+    .tips-badge:hover {
+      background: rgba(255,255,255,0.95);
+      transform: scale(1.05);
+    }
+
+    @keyframes floatRotate {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(10deg); }
+      100% { transform: translateY(0px) rotate(-10deg); }
+    }
+
+
+    .abhishek-text {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #fff;
+      z-index: 2;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #4facfe;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 15px;
+      margin: 10px;
+      flex: 1;
+      min-width: 120px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #4facfe;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .progress-container {
+      margin-top: 20px;
+    }
+
+    .progress {
+      height: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    .progress-bar {
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      border-radius: 5px;
+    }
+
+    .tooltip-icon {
+      color: #4facfe;
+      margin-left: 5px;
+      cursor: help;
+    }
+
+    .currency-display {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .currency-option {
+      text-align: center;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 15px;
+      min-width: 150px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+
+    .currency-option.active {
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .currency-amount {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .currency-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+   
+    @media(max-width: 768px){
+      .card { padding: 30px 20px; }
+      .tips-badge, .currency-toggle { padding: 10px 15px; font-size: 1rem; }
+      .stats-container { flex-direction: column; }
+      .abhishek-text { font-size: 1.4rem; }
+      .currency-display { gap: 15px; }
+      .currency-option { min-width: 130px; }
+    }
+
+    
+    .loader {
+      display: none;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #4facfe;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.85);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      transition: all 0.3s;
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(30deg);
+    }
+
+    body.dark-theme {
+      background: linear-gradient(270deg, #1a1a2e, #16213e, #0f3460, #533483);
+      color: #f0f0f0;
+    }
+
+    body.dark-theme .card {
+      background: rgba(30, 30, 46, 0.95);
+      color: #f0f0f0;
+    }
+
+    body.dark-theme .form-control, 
+    body.dark-theme .form-select {
+      background: rgba(40, 40, 60, 0.8);
+      border-color: #444;
+      color: #f0f0f0;
+    }
+
+    body.dark-theme .form-label {
+      color: #e0e0e0;
+    }
+
+    body.dark-theme .stat-item {
+      background: rgba(40, 40, 60, 0.8);
+      color: #f0f0f0;
+    }
+
+    body.dark-theme .tips-badge,
+    body.dark-theme .currency-toggle {
+      background: rgba(30, 30, 46, 0.85);
+      color: #f0f0f0;
+    }
+
+    body.dark-theme h2 {
+      color: #f0f0f0;
+    }
+
+    body.dark-theme .currency-option {
+      background: rgba(40, 40, 60, 0.8);
+      color: #f0f0f0;
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(79, 172, 254, 0.9);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      z-index: 100;
+      display: none;
+      animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      from { bottom: -100px; opacity: 0; }
+      to { bottom: 20px; opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<ul class="circles">
+  <li></li><li></li><li></li><li></li><li></li>
+  <li></li><li></li><li></li><li></li><li></li>
+  <li></li><li></li>
+</ul>
+
+<button class="theme-toggle" id="themeToggle">
+  <i class="fas fa-moon"></i>
+</button>
+
+<div class="currency-toggle" id="currencyToggle">
+  <span class="currency-flag">🇺🇸</span>
+  <span>USD</span>
+</div>
+
+
+<div class="tips-badge" id="tipsBadge">
+  💡 Tips & Info
+</div>
+
+
+<div class="abhishek-text">Abhishek</div>
+
+<div class="notification" id="notification">
+  Form submitted successfully!
+</div>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height:100vh; position: relative; z-index: 1;">
+  <div class="card w-100" style="max-width:700px;">
+    <h2 class="text-center"><i class="fas fa-shield-alt me-2"></i> Insurance Charges Predictor Pro</h2>
+    
+    <div class="stats-container">
+      <div class="stat-item">
+        <div class="stat-value" id="avgPremium">$12,500</div>
+        <div class="stat-label">Average Premium</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="usersCount">1,250</div>
+        <div class="stat-label">Users Today</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="accuracyRate">94%</div>
+        <div class="stat-label">Accuracy Rate</div>
+      </div>
+    </div>
+    
+ 
+    <form action="/predict" method="post" novalidate>
+      
+      <div class="mb-3">
+        <label class="form-label">Age <i class="fas fa-info-circle tooltip-icon" title="Your age significantly impacts insurance costs"></i></label>
+        <input type="number" name="age" class="form-control" placeholder="Enter your age" min="18" max="100" required>
+        <div class="progress-container">
+          <div class="progress">
+            <div class="progress-bar" id="ageProgress" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Sex <i class="fas fa-info-circle tooltip-icon" title="Gender can affect insurance rates"></i></label>
+        <select name="sex" class="form-select" required>
+          <option value="" disabled selected>Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">BMI (Body Mass Index) <i class="fas fa-info-circle tooltip-icon" title="BMI is calculated as weight(kg) / height(m)²"></i></label>
+        <input type="number" step="0.01" name="bmi" class="form-control" placeholder="Enter BMI" min="15" max="50" required>
+        <div class="progress-container">
+          <div class="progress">
+            <div class="progress-bar" id="bmiProgress" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Children <i class="fas fa-info-circle tooltip-icon" title="Number of children/dependents covered by insurance"></i></label>
+        <input type="number" name="children" class="form-control" placeholder="Number of children" min="0" max="10" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Smoker <i class="fas fa-info-circle tooltip-icon" title="Smokers typically pay higher premiums"></i></label>
+        <select name="smoker" class="form-select" required>
+          <option value="" disabled selected>Select option</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Region <i class="fas fa-info-circle tooltip-icon" title="Your geographic region affects insurance costs"></i></label>
+        <select name="region" class="form-select" required>
+          <option value="" disabled selected>Select region</option>
+          <option value="northeast">Northeast</option>
+          <option value="northwest">Northwest</option>
+          <option value="southeast">Southeast</option>
+          <option value="southwest">Southwest</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="fas fa-rocket me-2"></i> Predict Insurance Charges
+      </button>
+      
+      <div class="loader" id="loader"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  
+  const USD_TO_INR = 83.5;
+  let currentCurrency = 'USD';
+
+
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    document.body.classList.toggle('dark-theme');
+    const icon = this.querySelector('i');
+    if (document.body.classList.contains('dark-theme')) {
+      icon.classList.remove('fa-moon');
+      icon.classList.add('fa-sun');
+    } else {
+      icon.classList.remove('fa-sun');
+      icon.classList.add('fa-moon');
+    }
+  });
+
+
+  document.getElementById('currencyToggle').addEventListener('click', function() {
+    currentCurrency = currentCurrency === 'USD' ? 'INR' : 'USD';
+    const flag = this.querySelector('.currency-flag');
+    const text = this.querySelector('span:last-child');
+    
+    if (currentCurrency === 'INR') {
+      flag.textContent = '🇮🇳';
+      text.textContent = 'INR';
+    } else {
+      flag.textContent = '🇺🇸';
+      text.textContent = 'USD';
+    }
+
+    updateCurrencyDisplay();
+  });
+
+
+  function updateCurrencyDisplay() {
+    const premiumElement = document.getElementById('avgPremium');
+    let premiumValue = 12500;
+    
+    if (currentCurrency === 'INR') {
+      premiumValue = premiumValue * USD_TO_INR;
+      premiumElement.textContent = '₹' + premiumValue.toLocaleString('en-IN');
+    } else {
+      premiumElement.textContent = '$' + premiumValue.toLocaleString();
+    }
+  }
+
+ 
+  document.getElementById('tipsBadge').addEventListener('click', function() {
+    const tips = [
+      "Lower BMI can reduce insurance costs",
+      "Non-smokers save up to 50% on premiums",
+      "Adding children increases premiums slightly",
+      "Age is a major factor in insurance pricing"
+    ];
+    const randomTip = tips[Math.floor(Math.random() * tips.length)];
+    showNotification(randomTip);
+  });
+
+
+  document.querySelector('form').addEventListener('submit', function(e) {
+ 
+    document.getElementById('loader').style.display = 'block';
+    
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+    
+
+  });
+
+  
+  document.querySelector('input[name="age"]').addEventListener('input', function() {
+    const age = parseInt(this.value) || 0;
+    const progress = Math.min(100, (age / 100) * 100);
+    document.getElementById('ageProgress').style.width = progress + '%';
+  });
+
+ 
+  document.querySelector('input[name="bmi"]').addEventListener('input', function() {
+    const bmi = parseFloat(this.value) || 0;
+    const progress = Math.min(100, (bmi / 50) * 100);
+    document.getElementById('bmiProgress').style.width = progress + '%';
+  });
+
+
+  function showNotification(message) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.style.display = 'block';
+    
+    setTimeout(function() {
+      notification.style.display = 'none';
+    }, 3000);
+  }
+
+
+  window.addEventListener('load', function() {
+
+    let avgPremium = 0;
+    const premiumElement = document.getElementById('avgPremium');
+    const premiumInterval = setInterval(function() {
+      avgPremium += 125;
+      if (currentCurrency === 'INR') {
+        premiumElement.textContent = '₹' + (avgPremium * USD_TO_INR).toLocaleString('en-IN');
+      } else {
+        premiumElement.textContent = '$' + avgPremium.toLocaleString();
+      }
+      if (avgPremium >= 12500) {
+        clearInterval(premiumInterval);
+      }
+    }, 30);
+
+
+    let usersCount = 0;
+    const usersElement = document.getElementById('usersCount');
+    const usersInterval = setInterval(function() {
+      usersCount += 25;
+      usersElement.textContent = usersCount.toLocaleString();
+      if (usersCount >= 1250) {
+        clearInterval(usersInterval);
+      }
+    }, 30);
+
+    let accuracyRate = 0;
+    const accuracyElement = document.getElementById('accuracyRate');
+    const accuracyInterval = setInterval(function() {
+      accuracyRate += 2;
+      accuracyElement.textContent = accuracyRate + '%';
+      if (accuracyRate >= 94) {
+        clearInterval(accuracyInterval);
+      }
+    }, 50);
+  });
+</script>
+
+</body>
+</html>
